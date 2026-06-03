@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ campaign:
     if (!data) return { title: 'Not Found' };
     
     return {
-        title: `${data.hero.title} | Pimenta Estética`,
+        title: `${data.hero.title} | ML Equipamentos`,
         description: data.hero.subtitle,
         openGraph: {
             title: data.hero.title,

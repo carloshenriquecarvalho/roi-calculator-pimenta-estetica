@@ -8,9 +8,9 @@ export default function Footer() {
         <div className="col-span-1 md:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 bg-highlight rounded-full flex items-center justify-center">
-              <span className="text-white font-serif font-bold">PE</span>
+              <span className="text-white font-serif font-bold">ME</span>
             </div>
-            <span className="font-serif font-semibold text-xl">Pimenta Estética</span>
+            <span className="font-serif font-semibold text-xl">ML Equipamentos</span>
           </div>
           <p className="text-gray-300 max-w-sm mb-6">
             Especialistas em equipamentos que elevam os procedimentos da sua clínica.
@@ -49,7 +49,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
-        <p>© {new Date().getFullYear()} Pimenta Estética. Todos os direitos reservados.</p>
+        <p>© {new Date().getFullYear()} ML Pimentel - CNPJ: 32.617.140/0001-08. Todos os direitos reservados.</p>
       </div>
     </footer>
   );

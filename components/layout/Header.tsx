@@ -7,7 +7,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 w-full bg-background/80 backdrop-blur-md z-50 border-b border-shadow">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          Pimenta Estética
+          ML Equipamentos
           {/* <Image src="/logo-pimenta.jpg" alt="Logo" width={40} height={40} /> */}
         </div>
         <nav className="hidden md:flex gap-8 text-sm font-medium">

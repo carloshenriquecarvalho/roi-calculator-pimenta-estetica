@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Landing Page Premium",
+  title: "ML Equipamentos",
   description: "A clínica perfeita para você",
 };
 
