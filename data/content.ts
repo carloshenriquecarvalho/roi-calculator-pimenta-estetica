@@ -125,21 +125,21 @@ export const hubContent: HubContent = {
             slug: "lasers", // Deve corresponder a uma chave em 'campaigns' quando houver
             title: "Lasers de Alta Potência",
             description: "Tecnologias para depilação definitiva, remoção de tatuagem e rejuvenescimento.",
-            imgUrl: ""
+            imgUrl: "/omerlaser.jpeg"
         },
         {
             id: "radiofrequencia",
             slug: "radiofrequencia",
             title: "Radiofrequência Fracionada",
             description: "Equipamentos de ponta para tratamento de flacidez, estrias e cicatrizes.",
-            imgUrl: ""
+            imgUrl: "/radiofrequência.jpeg"
         },
         {
             id: "ultrassom",
             slug: "ultrassom",
             title: "Ultrassom Microfocado",
             description: "O padrão ouro em lifting não cirúrgico e contorno corporal.",
-            imgUrl: ""
+            imgUrl: "/ultrassom.jpeg"
         }
     ],
     results: {
