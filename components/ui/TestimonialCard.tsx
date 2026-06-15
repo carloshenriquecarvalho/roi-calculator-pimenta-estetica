@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Star, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
 import { TestimonialItem } from "@/types/types";
 import { YouTubeEmbed } from '@next/third-parties/google';
 
@@ -22,11 +22,21 @@ export default function TestimonialCard({ card, index }: TestimonialCardProps) {
         >
             {card.videoUrl ? (
                 <div className="relative w-full aspect-[9/16] md:aspect-video bg-shadow overflow-hidden">
-                    <YouTubeEmbed 
-                        videoid={card.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/)![1]} 
-                        playlabel={`Depoimento de ${card.title}`}
-                        params="rel=0"
-                    />
+                    {card.videoUrl.includes('youtube.com') || card.videoUrl.includes('youtu.be') ? (
+                        <YouTubeEmbed 
+                            videoid={card.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/)![1]} 
+                            playlabel={`Depoimento de ${card.title}`}
+                            params="rel=0"
+                        />
+                    ) : (
+                        <video 
+                            src={card.videoUrl} 
+                            controls 
+                            className="w-full h-full object-cover"
+                            preload="metadata"
+                            playsInline
+                        />
+                    )}
                 </div>
             ) : (
                 <div className="relative w-full aspect-video bg-shadow flex items-center justify-center overflow-hidden">
@@ -54,14 +64,7 @@ export default function TestimonialCard({ card, index }: TestimonialCardProps) {
                     </p>
                 </div>
                 
-                <div className="flex items-center justify-between pt-6 border-t border-shadow/50">
-                    <h4 className="font-sans font-bold text-base text-title tracking-wide">{card.title}</h4>
-                    <div className="flex gap-1">
-                        {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={14} className="fill-highlight text-highlight" />
-                        ))}
-                    </div>
-                </div>
+
             </div>
         </motion.div>
     );

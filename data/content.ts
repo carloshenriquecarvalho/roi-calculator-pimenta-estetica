@@ -150,9 +150,9 @@ export const hubContent: HubContent = {
     testimonials: {
         title: "Parceiros de Sucesso",
         cardContent: [
-            { id: 1, title: "Dra. Fernanda L.", patientImgUrl: "", videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY" },
-            { id: 2, title: "Dr. Ricardo G.", patientImgUrl: "", videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY" },
-            { id: 3, title: "Clínica Bela Pele", patientImgUrl: "", videoUrl: "https://www.youtube.com/embed/tgbNymZ7vqY" },
+            { id: 1, title: "Dra. Fernanda L.", patientImgUrl: "", videoUrl: "/WhatsApp Video 2026-06-08 at 15.56.13.mp4" },
+            { id: 2, title: "Dr. Ricardo G.", patientImgUrl: "", videoUrl: "/WhatsApp Video 2026-06-08 at 15.56.14.mp4" },
+            { id: 3, title: "Clínica Bela Pele", patientImgUrl: "", videoUrl: "/WhatsApp Video 2026-06-08 at 15.56.15.mp4" },
         ]
     },
     faq: {
