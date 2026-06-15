@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calculator, DollarSign, TrendingUp, Calendar, Clock, Percent } from "lucide-react";
 
 export default function ROICalculator() {
+  const [equipmentName, setEquipmentName] = useState<string>("");
   const [installmentValue, setInstallmentValue] = useState<number>(2500);
   const [sessionPrice, setSessionPrice] = useState<number>(300);
   const [sessionsPerDay, setSessionsPerDay] = useState<number>(4);
@@ -80,6 +81,18 @@ export default function ROICalculator() {
             <h3 className="text-xl font-semibold text-title mb-6 flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-highlight" /> Parâmetros
             </h3>
+
+            {/* Equipment Name */}
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-gray-300">Nome do Equipamento (Opcional)</label>
+              <input
+                type="text"
+                placeholder="Ex: Ultraformer MPT, Lavieen..."
+                value={equipmentName}
+                onChange={(e) => setEquipmentName(e.target.value)}
+                className="w-full bg-background border border-shadow rounded-lg px-4 py-3 text-title focus:outline-none focus:border-highlight transition-colors"
+              />
+            </div>
 
             {/* Installment Value */}
             <div className="space-y-4">
@@ -197,6 +210,20 @@ export default function ROICalculator() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="lg:col-span-7 flex flex-col gap-6"
           >
+            {/* Equipment Name Display (for screenshots) */}
+            {equipmentName && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-card border border-highlight/30 rounded-2xl p-4 text-center shadow-[0_0_15px_rgba(212,175,55,0.1)]"
+              >
+                <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">Simulação de Retorno</p>
+                <h3 className="text-2xl font-serif font-bold text-highlight">
+                  {equipmentName}
+                </h3>
+              </motion.div>
+            )}
+
             {/* Revenue & Profit Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-card border border-shadow rounded-2xl p-6 relative overflow-hidden group hover:border-highlight/30 transition-colors">
