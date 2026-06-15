@@ -224,36 +224,41 @@ export default function ROICalculator() {
 
             {/* ROI Percentage Card */}
             <div className="bg-card border border-shadow rounded-2xl p-6 relative overflow-hidden group hover:border-highlight/30 transition-colors flex-grow flex flex-col justify-center">
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                <Percent className="w-32 h-32 text-white" />
-              </div>
-              <p className="text-gray-400 text-sm font-medium mb-2">Retorno sobre Investimento (ROI)</p>
-              <div className="flex items-end gap-4">
-                <h4 className={`text-5xl md:text-6xl font-bold ${roiPercentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {roiPercentage > 0 ? '+' : ''}{roiPercentage.toFixed(0)}%
-                </h4>
+              {/* Background Icon */}
+              <div className="absolute right-0 top-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+                <Percent className="w-24 h-24 text-white" />
               </div>
               
-              <div className="mt-8 relative pt-4">
-                <div className="h-2 w-full bg-shadow rounded-full overflow-hidden">
-                  <motion.div 
-                    className="h-full bg-highlight"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(Math.max(roiPercentage / 10, 0), 100)}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                  />
+              <div className="relative z-10">
+                <p className="text-gray-400 text-sm font-medium mb-2">Retorno sobre Investimento (ROI)</p>
+                <div className="flex items-end gap-4">
+                  <h4 className={`text-5xl md:text-6xl font-bold ${roiPercentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {roiPercentage > 0 ? '+' : ''}{roiPercentage.toFixed(0)}%
+                  </h4>
                 </div>
-                <div className="flex justify-between mt-2 text-xs text-gray-500">
-                  <span>Ponto de Equilíbrio (0%)</span>
-                  <span>Alta Rentabilidade</span>
+                
+                <div className="mt-8 relative pt-4">
+                  <div className="h-2 w-full bg-shadow/50 rounded-full overflow-hidden">
+                    <motion.div 
+                      className="h-full"
+                      style={{ backgroundColor: 'var(--highlight)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(Math.max(roiPercentage / 10, 0), 100)}%` }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                    />
+                  </div>
+                  <div className="flex justify-between mt-2 text-xs text-gray-500">
+                    <span>0% (Empate)</span>
+                    <span>1000%+</span>
+                  </div>
                 </div>
+                
+                <p className="text-sm text-gray-400 mt-6 leading-relaxed max-w-md">
+                  {roiPercentage > 0 
+                    ? `Excelente! O seu faturamento é ${(installmentValue > 0 ? (monthlyRevenue / installmentValue).toFixed(1) : 0)}x maior que o valor da parcela. Este investimento tem alto potencial de retorno.`
+                    : `Atenção: Com estes valores, a parcela é maior que o faturamento. Tente aumentar as sessões ou o preço cobrado.`}
+                </p>
               </div>
-              
-              <p className="text-sm text-gray-400 mt-6 leading-relaxed max-w-md">
-                {roiPercentage > 0 
-                  ? `Excelente! O seu faturamento é ${(monthlyRevenue / installmentValue).toFixed(1)}x maior que o valor da parcela. Este investimento tem alto potencial de retorno.`
-                  : `Atenção: Com estes valores, a parcela é maior que o faturamento. Tente aumentar as sessões ou o preço cobrado.`}
-              </p>
             </div>
           </motion.div>
         </div>

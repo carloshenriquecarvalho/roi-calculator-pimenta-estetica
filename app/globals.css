@@ -13,6 +13,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-button: var(--highlight);
+  --color-highlight: var(--highlight);
   --color-hover: var(--highlight-hover);
 
   --color-card: var(--card);
