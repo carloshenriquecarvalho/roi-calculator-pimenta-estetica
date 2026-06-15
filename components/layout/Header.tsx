@@ -15,6 +15,7 @@ export default function Header() {
           <Link href="/#servicos" className="hover:text-highlight transition-colors">Serviços</Link>
           <Link href="/#resultados" className="hover:text-highlight transition-colors">Resultados</Link>
           <Link href="/#depoimentos" className="hover:text-highlight transition-colors">Depoimentos</Link>
+          <Link href="/calculadora-roi" className="hover:text-highlight transition-colors">Calculadora ROI</Link>
           <Link href="/#faq" className="hover:text-highlight transition-colors">FAQ</Link>
         </nav>
         <div className="hidden sm:block">
