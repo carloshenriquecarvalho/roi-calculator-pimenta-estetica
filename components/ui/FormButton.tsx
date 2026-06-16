@@ -11,7 +11,7 @@ export default function FormButton({ campaign }: FormButtonProps) {
         });
 
         setTimeout(() => {
-            window.location.href = "https://wa.me/5561996095651?text=Ol%C3%A1,%20vim%20pelo%20site";
+            window.location.href = "https://wa.me/556199216585?text=Ol%C3%A1,%20vim%20pelo%20site";
         }, 500);
     };
 

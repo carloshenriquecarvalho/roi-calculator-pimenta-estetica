@@ -2,9 +2,133 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Calculator, DollarSign, TrendingUp, Calendar, Clock, Percent, Download } from "lucide-react";
+import { Calculator, DollarSign, TrendingUp, Calendar, Clock, Percent, Download, Target, Users, MessageCircle, CheckSquare, CheckCircle2, ChevronDown, ChevronUp, Zap, BarChart, AlertTriangle, MessageSquare } from "lucide-react";
 import * as htmlToImage from "html-to-image";
 import jsPDF from "jspdf";
+
+const CHANNELS = [
+  {
+    id: "clientes_ativos",
+    label: "Clientes Ativos",
+    stats: "Velocidade: Resultado rápido | Esforço: Baixo | ROI: Alto",
+    actionPlan: [
+      "Segmente sua base antes de qualquer contato. Separe clientes em 3 grupos: (a) compraram há menos de 90 dias, (b) entre 90–180 dias sem retorno, (c) mais de 6 meses. Cada grupo recebe abordagem diferente — tom, oferta e urgência variam conforme o tempo de distância.",
+      "Monte uma oferta de lançamento exclusiva. Não ofereça desconto genérico. Crie uma \"condição de cliente VIP\": sessão de avaliação gratuita com o novo equipamento, pacote trial, ou acesso antecipado antes de abrir ao público. A percepção de exclusividade é o que gera resposta rápida.",
+      "Contato via WhatsApp com personalização real. Mencione o nome, o tratamento anterior que ela fez, e o resultado que já obteve. \"Oi Camila, lembro que você veio fazer o protocolo de firmeza — achei que ia adorar conhecer o novo equipamento que chegou aqui.\"",
+      "Crie urgência legítima. Limite a oferta a 10 clientes da base antes de abrir ao público geral. Isso gera prioridade real, não artificial — e funciona porque é verdade.",
+      "Acompanhe o resultado da sessão e peça indicação imediata. Logo após o agendamento confirmado, pergunte se ela tem uma amiga que também ia adorar conhecer. Aproveite o momentum da empolgação antes que esfrie."
+    ],
+    scripts: [
+      { title: "Reativação — grupo B (90–180 dias sem retorno)", text: "Oi [nome]! Sumida 👋 Lembro que você fez [tratamento] aqui com a gente e adorou o resultado. Chegou um equipamento novo que complementa exatamente o que você fez — e antes de abrir pra agenda normal, quero oferecer pra quem já é cliente. Tenho horário na [dia] ou [dia], qual funciona melhor pra você?" },
+      { title: "Base quente — grupo A (menos de 90 dias)", text: "Oi [nome], tudo bem? Aqui é [seu nome] da [clínica]. Acabou de chegar um equipamento que combina perfeitamente com o protocolo que você já faz — estamos com agenda de avaliação gratuita essa semana pra clientes. Você topa conhecer?" }
+    ],
+    cadence: [
+      "Dia 1 — Envio do WhatsApp personalizado para o grupo B (90–180 dias).",
+      "Dia 2 — Envio para o grupo A (menos de 90 dias), com oferta diferente, mais direta.",
+      "Dia 4 — Follow-up para quem não respondeu: mensagem mais curta, sem repetir a oferta, só curiosidade.",
+      "Dia 7 — Último contato: \"Já preenchemos boa parte das vagas, mas reservei uma pra você até amanhã.\"",
+      "Dia 14 — Iniciar reativação do grupo C (mais de 6 meses) com abordagem mais suave e ângulo diferente."
+    ],
+    metrics: "Taxa de resposta: 30–50%. Taxa de conversão em agendamento: 15–25%. Tempo até o primeiro resultado: 2–4 dias.",
+    errors: "Não mande mensagem em massa com o mesmo texto — parece spam e destrói a percepção de exclusividade. Não ofereça desconto sem agregar valor antes — isso treina o cliente a esperar promoção. Não esqueça de seguir o contato de quem disse \"depois\" — a maioria das conversões vem no follow-up."
+  },
+  {
+    id: "trafego_pago",
+    label: "Tráfego Pago",
+    stats: "Velocidade: Resultado em 7–15 dias | Esforço: Alto | ROI: Médio–alto",
+    actionPlan: [
+      "Defina a \"dor específica\" antes de criar qualquer criativo. Não anuncie o equipamento — anuncie o problema que ele resolve. \"Flacidez que nenhum creme resolve\" ou \"gordura localizada que persiste mesmo malhando\" convertem muito mais do que \"conheça nossa nova tecnologia\".",
+      "Crie 3 campanhas com objetivos distintos. Consciência: vídeo curto mostrando antes/depois real. Consideração: depoimento de cliente com resultado específico e detalhado. Conversão: oferta direta com CTA para WhatsApp ou landing page simples. Cada campanha fala com a pessoa em um momento diferente da jornada.",
+      "Direcione sempre para WhatsApp, não para o Instagram. Landing pages que abrem o WhatsApp têm conversão 3x maior do que formulários. Configure o botão com texto pré-preenchido no link para a pessoa não precisar digitar nada.",
+      "Segmentação: mulheres de 28–52 anos, raio de 10–15 km da clínica. Não use interesse genérico como \"beleza\". Use comportamentos: pessoas que interagem com conteúdo de emagrecimento, saúde da mulher, ou procedimentos estéticos específicos.",
+      "Teste 3 variações de criativo por semana, mudando uma variável por vez. Headline, imagem ou CTA — um de cada vez. Desligue o que tem CPL acima de R$25–40 e escale o que está abaixo. Sem testes sistemáticos, você não sabe o que está funcionando."
+    ],
+    scripts: [
+      { title: "Abertura de vídeo — primeiros 3 segundos", text: "Você já tentou de tudo e a flacidez ainda está lá? — Mostre o rosto falando direto para a câmera. Sem texto animado, sem música alta. Autenticidade converte mais do que produção nesse formato." },
+      { title: "Copy do anúncio de conversão", text: "Chegou o [nome do equipamento] na [clínica]. Tecnologia usada para [resultado específico] em [X sessões]. Agenda limitada para avaliação gratuita essa semana. Clique e fale com a gente agora 👇" }
+    ],
+    cadence: [
+      "Semana 1 — Lançar campanha de consciência com 2 criativos de vídeo antes/depois. Analisar primeiros dados de alcance e custo por visualização.",
+      "Semana 2 — Adicionar campanha de conversão. Analisar CPL e desligar criativos com performance ruim.",
+      "Semana 3 — Criar campanha de remarketing para quem assistiu 50% ou mais do vídeo e ainda não entrou em contato.",
+      "Semana 4 — Revisão geral. Escalar orçamento do criativo com melhor CPL e repetir o ciclo de testes."
+    ],
+    metrics: "CPL saudável: R$15–35 por lead. Taxa de conversão de lead em agendamento: 20–35%. ROAS mínimo para escalar: 3–5x.",
+    errors: "Não impulsione posts do feed — crie anúncios específicos no Gerenciador de Anúncios. Não use imagens de banco (stock photos) — rostos reais de clientes convertem muito mais. Não demore para responder leads: a taxa de conversão cai 80% depois de 2 horas sem retorno."
+  },
+  {
+    id: "indicacao",
+    label: "Indicação",
+    stats: "Velocidade: Resultado em 15–30 dias | Esforço: Baixo | ROI: Muito alto",
+    actionPlan: [
+      "Crie um benefício que o cliente ativamente quer contar. Desconto só funciona se for relevante. Pense em: sessão extra gratuita, produto exclusivo, upgrade no protocolo, ou acesso a tratamento que ela ainda não fez. O benefício precisa ser bom o suficiente para ela sentir orgulho de compartilhar.",
+      "Defina o benefício para a amiga indicada também. A dinâmica mais poderosa é dupla: quem indica e quem é indicada ganham algo. Isso remove a barreira psicológica de \"parecer interesseira\" e deixa a conversa natural.",
+      "Peça a indicação no momento certo: logo após o resultado. O melhor momento é quando a cliente vê o resultado no espelho ainda na clínica. A euforia do resultado é o gatilho mais poderoso — não deixe esfriar.",
+      "Facilite ao máximo: dê a mensagem pronta para ela enviar. Muitas clientes gostariam de indicar mas não sabem como começar. Crie uma mensagem que ela pode copiar e enviar para a amiga em 10 segundos, sem precisar pensar no que escrever.",
+      "Rastreie cada indicação e feche o ciclo com quem indicou. Quando a amiga indicada aparecer, avise quem indicou: \"Sua amiga [nome] agendou! Seu benefício já está garantido.\" Isso gera sensação de recompensa e repete o comportamento automaticamente."
+    ],
+    scripts: [
+      { title: "Pedido de indicação após a sessão", text: "[Nome], você está adorando o resultado né? Acabei de lembrar: temos nosso programa onde se você indicar uma amiga e ela vier conhecer, você ganha [benefício]. Tem alguém que você sabe que ia amar isso? — Pausa. Deixe ela pensar. Não preencha o silêncio." },
+      { title: "Mensagem pronta para a cliente copiar e enviar", text: "Amiga, comecei a fazer [tratamento] na [clínica] e to amando os resultados. A [nome da profissional] é incrível. Você pode agendar uma avaliação gratuita aqui: [link/número]. Fala que fui eu que indiquei 😊" }
+    ],
+    cadence: [
+      "Durante a sessão — Perguntar sobre o resultado e abrir a conversa sobre indicação de forma natural, sem parecer roteiro.",
+      "Logo após a sessão — Enviar a mensagem pronta via WhatsApp para a cliente copiar e encaminhar.",
+      "3 dias depois — Follow-up gentil: \"Teve alguma amiga interessada?\"",
+      "Ao confirmar — Notificar quem indicou quando a amiga agendar: reforça o comportamento e fecha o ciclo."
+    ],
+    metrics: "Com abordagem ativa: 1 em cada 3 clientes indica alguém. Taxa de conversão de indicadas em agendamento: 60–80%. Custo de aquisição: zero.",
+    errors: "Não ofereça só desconto — experiências e benefícios em serviço têm muito mais valor percebido. Não peça indicação por mensagem fria — o momento presencial após o resultado é insubstituível. Não esqueça de fechar o ciclo: a cliente que indicou precisa saber que a amiga veio."
+  },
+  {
+    id: "instagram_organico",
+    label: "Instagram Orgânico",
+    stats: "Velocidade: Resultado em 30–60 dias | Esforço: Médio | ROI: Médio",
+    actionPlan: [
+      "Construa em 3 pilares de conteúdo, não poste aleatoriamente. Pilar 1 — Educação: explique como o tratamento funciona, mitos e dúvidas frequentes. Pilar 2 — Prova social: resultados reais, depoimentos, bastidores de atendimento. Pilar 3 — Humanização: quem é você, sua rotina, o que te motivou a trabalhar com isso.",
+      "Reels de antes/depois com narração são o formato de maior alcance. Não publique só a imagem — grave um áudio explicando o que foi feito, quantas sessões, qual o protocolo. Isso educa e vende ao mesmo tempo, e o algoritmo distribui muito mais do que posts estáticos.",
+      "Stories diários com CTA claro no final. Mostre o dia a dia, bastidores, receba perguntas nas caixinhas. No último Story do dia, sempre um convite direto: \"Quer agendar sua avaliação? Manda uma mensagem aqui.\"",
+      "Responda todos os comentários e DMs nas primeiras 2 horas. O algoritmo premia engajamento rápido. Além disso, cada comentário respondido é uma conversa de venda em potencial — trate como tal.",
+      "Crie uma sequência de antecipação de 7 dias para qualquer novidade. Antes de revelar o novo equipamento: Stories de \"está chegando algo\", enquetes sobre as principais dores, contagem regressiva. Isso gera audiência aquecida antes do lançamento e aumenta o alcance do post de revelação."
+    ],
+    scripts: [
+      { title: "Abertura de Reel — primeiros 3 segundos", text: "Você sabe por que a maioria dos tratamentos não funciona sozinho? — Pausa — Responde a pergunta. Prender a atenção nos primeiros 3 segundos é o único objetivo da abertura. Use pergunta, curiosidade ou afirmação que gere discordância imediata." },
+      { title: "Story de conversão — último do dia", text: "Se você acompanha aqui há um tempo e ainda não veio conhecer nossa clínica, esse é o sinal. Agenda aberta essa semana — responde esse Story com 'quero' e eu te mando as opções de horário 👇" }
+    ],
+    cadence: [
+      "Segunda — Reel educativo: dúvida frequente ou mito sobre o tratamento.",
+      "Quarta — Post de resultado real com depoimento da cliente (com autorização).",
+      "Sexta — Reel de bastidores ou humanização: quem é você, por que faz o que faz.",
+      "Todo dia — 3 a 5 Stories: rotina, caixinha de perguntas, CTA de agendamento no final."
+    ],
+    metrics: "Taxa de engajamento saudável: 3–5%. Proporção de seguidores que viram DMs por mês: 5–10%. Tempo mínimo para ver resultado consistente: 30 dias.",
+    errors: "Não poste só fotos de resultado sem contexto — explique o que foi feito, senão parece photoshop. Não use hashtags genéricas como #beleza ou #estetica — prefira nichadas como #drenagemmanual ou #radiofrequenciafacial. Não mude de estratégia em menos de 30 dias — consistência é a variável mais importante no orgânico."
+  },
+  {
+    id: "prospeccao_ativa",
+    label: "Prospecção Ativa",
+    stats: "Velocidade: Resultado rápido | Esforço: Alto | ROI: Médio",
+    actionPlan: [
+      "Separe os leads em 3 listas antes de começar. Lista A: fez orçamento há menos de 30 dias. Lista B: entre 30–90 dias. Lista C: mais de 90 dias ou contato inicial que nunca retornou. Cada lista tem script e abordagem diferentes — não trate todas igual.",
+      "Nunca reaborde com o mesmo argumento que não funcionou. Se a cliente sumiu depois do orçamento, ela teve uma objeção — preço, tempo, dúvida. Voltar com o mesmo texto é desperdiçar o contato. Aborde com um ângulo novo: novidade, resultado de cliente com perfil similar, ou mudança na oferta.",
+      "Use a novidade do equipamento como gancho legítimo. \"Lembrei de você porque chegou um equipamento que resolve exatamente o que você queria tratar\" — isso abre a conversa sem parecer que você está cobrando a decisão antiga.",
+      "Defina um bloco fixo de 30–45 minutos diários exclusivo para prospecção. Não misture com atendimento. Foco total nesse bloco, com meta de 10–15 contatos por dia. Sem volume consistente, não há resultado previsível.",
+      "Documente cada contato com status e data de follow-up. Use uma planilha simples: nome, data do contato, resposta, próximo passo. Sem registro, você vai entrar em contato duas vezes com alguém ou nunca dar follow-up em quem estava quase fechando."
+    ],
+    scripts: [
+      { title: "Reativação de orçamento — lista A (até 30 dias)", text: "Oi [nome]! Aqui é [nome] da [clínica]. Passando pra avisar que chegou um equipamento novo aqui que trabalha exatamente a [queixa que ela tinha]. Antes de abrir agenda pro público, queria oferecer pra quem já demonstrou interesse. Topa uma avaliação rápida essa semana?" },
+      { title: "Contato frio que nunca respondeu", text: "Oi [nome], tudo bem? Sei que faz um tempo desde nosso último contato — não quero ser inconveniente, só queria compartilhar que temos uma novidade que pode ser exatamente o que você buscava. Se não for o momento, sem problema! 😊" }
+    ],
+    cadence: [
+      "Bloco diário — 30–45 minutos fixos. Meta de 10–15 contatos. Começa sempre pela lista A, que tem maior probabilidade de conversão.",
+      "Resposta rápida — Leads que respondem: mover para agendamento em menos de 2 horas.",
+      "Dia 3 sem resposta — Um follow-up leve: \"Você viu minha mensagem de [dia]?\" — só uma vez.",
+      "Sem resposta após o follow-up — Marcar para recontatar em 30 dias com novo ângulo. Não insistir além disso."
+    ],
+    metrics: "Taxa de resposta em lista fria: 10–20%. Taxa de conversão em lista quente (até 30 dias): 40–60%. Meta diária para resultado consistente: 15 contatos.",
+    errors: "Não mande mensagem genérica para toda a lista — personalização é o que diferencia contato de spam. Não insista mais de 2 vezes no mesmo ciclo — respeitar o silêncio preserva a reputação da marca. Não prospecte sem script definido — improvisar no momento gera mensagens fracas e resultado inconsistente."
+  }
+];
 
 export default function ROICalculator() {
   const [equipmentName, setEquipmentName] = useState<string>("");
@@ -14,13 +138,19 @@ export default function ROICalculator() {
   const [sessionPrice, setSessionPrice] = useState<number>(300);
   const [sessionsPerDay, setSessionsPerDay] = useState<number>(4);
   const [daysWorked, setDaysWorked] = useState<number>(20);
+  const [conversionRate, setConversionRate] = useState<number>(10);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
 
   // PDF Export State
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  const [expandedChannel, setExpandedChannel] = useState<string | null>(null);
+
   // Computed Values
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
+  const [conversationsNeeded, setConversationsNeeded] = useState<number>(0);
+  const [monthlyConversations, setMonthlyConversations] = useState<number>(0);
   const [monthlyProfit, setMonthlyProfit] = useState<number>(0);
   const [roiPercentage, setRoiPercentage] = useState<number>(0);
 
@@ -29,10 +159,14 @@ export default function ROICalculator() {
     const profit = revenue - installmentValue;
     const roi = installmentValue > 0 ? (profit / installmentValue) * 100 : 0;
 
+    const conversationsPerDay = conversionRate > 0 ? Math.ceil(sessionsPerDay / (conversionRate / 100)) : 0;
+
     setMonthlyRevenue(revenue);
     setMonthlyProfit(profit);
     setRoiPercentage(roi);
-  }, [installmentValue, sessionPrice, sessionsPerDay, daysWorked]);
+    setConversationsNeeded(conversationsPerDay);
+    setMonthlyConversations(conversationsPerDay * daysWorked);
+  }, [installmentValue, sessionPrice, sessionsPerDay, daysWorked, conversionRate]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -55,13 +189,16 @@ export default function ROICalculator() {
         backgroundColor: '#121212',
       });
       
+      const elementHeight = reportRef.current.offsetHeight;
+      const pdfHeight = Math.max(elementHeight, 1123); // At least A4
+
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'px',
-        format: [794, 1123] // A4 exactly
+        format: [794, pdfHeight]
       });
       
-      pdf.addImage(imgData, 'PNG', 0, 0, 794, 1123);
+      pdf.addImage(imgData, 'PNG', 0, 0, 794, elementHeight);
       const fileName = `Proposta-${clientName || 'Cliente'}-${equipmentName || 'Equipamento'}.pdf`;
       pdf.save(fileName.replace(/\s+/g, '-'));
     } catch (error) {
@@ -113,7 +250,7 @@ export default function ROICalculator() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="lg:col-span-5 bg-card/50 backdrop-blur-sm border border-shadow rounded-2xl p-6 md:p-8 space-y-8"
+            className="lg:col-span-5 lg:sticky lg:top-24 self-start bg-card/50 backdrop-blur-sm border border-shadow rounded-2xl p-6 md:p-8 space-y-8"
           >
             <h3 className="text-xl font-semibold text-title mb-6 flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-highlight" /> Parâmetros
@@ -262,6 +399,64 @@ export default function ROICalculator() {
                 className="w-full h-2 bg-shadow rounded-lg appearance-none cursor-pointer accent-highlight"
               />
             </div>
+
+            {/* Conversion Rate */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
+                  <Target className="w-4 h-4" /> Taxa de Conversão
+                </label>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={conversionRate || ""}
+                    onChange={(e) => setConversionRate(Number(e.target.value))}
+                    className="bg-transparent border-b border-shadow/50 text-title font-semibold focus:outline-none focus:border-title text-right w-16"
+                  />
+                  <span className="text-gray-400 text-sm">%</span>
+                </div>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                step="1"
+                value={conversionRate}
+                onChange={(e) => setConversionRate(Number(e.target.value))}
+                className="w-full h-2 bg-shadow rounded-lg appearance-none cursor-pointer accent-highlight"
+              />
+            </div>
+
+            {/* Channels */}
+            <div className="space-y-4 pt-4 border-t border-shadow/50">
+              <label className="text-sm font-medium text-gray-300 flex items-center gap-2 mb-4">
+                <Users className="w-4 h-4" /> Canais de Aquisição (Plano de Ação)
+              </label>
+              <div className="grid grid-cols-1 gap-3">
+                {CHANNELS.map((channel) => (
+                  <label key={channel.id} className="flex items-start gap-3 cursor-pointer group">
+                    <div className="relative flex items-center justify-center mt-0.5">
+                      <input
+                        type="checkbox"
+                        className="peer sr-only"
+                        checked={selectedChannels.includes(channel.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedChannels([...selectedChannels, channel.id]);
+                          } else {
+                            setSelectedChannels(selectedChannels.filter(id => id !== channel.id));
+                          }
+                        }}
+                      />
+                      <div className="w-5 h-5 border-2 border-gray-500 rounded flex items-center justify-center peer-checked:border-highlight peer-checked:bg-highlight transition-colors">
+                        {selectedChannels.includes(channel.id) && <CheckSquare className="w-3 h-3 text-black" />}
+                      </div>
+                    </div>
+                    <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{channel.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </motion.div>
 
           {/* Outputs Section (Screen ONLY - No longer captured) */}
@@ -366,6 +561,122 @@ export default function ROICalculator() {
                 </p>
               </div>
             </div>
+
+            {/* Conversations Needed Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div className="bg-card border border-shadow rounded-2xl p-6 relative overflow-hidden group hover:border-highlight/30 transition-colors">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <MessageCircle className="w-16 h-16 text-white" />
+                </div>
+                <p className="text-gray-400 text-sm font-medium mb-2">Meta Diária de Conversas</p>
+                <h4 className="text-3xl font-bold text-title">{conversationsNeeded} <span className="text-lg text-gray-500 font-normal">pessoas</span></h4>
+                <p className="text-xs text-gray-500 mt-4">
+                  Para agendar {sessionsPerDay} sessões com {conversionRate}% de conversão.
+                </p>
+              </div>
+              <div className="bg-card border border-shadow rounded-2xl p-6 relative overflow-hidden group hover:border-highlight/30 transition-colors">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <Target className="w-16 h-16 text-white" />
+                </div>
+                <p className="text-gray-400 text-sm font-medium mb-2">Meta Mensal de Conversas</p>
+                <h4 className="text-3xl font-bold text-title">{monthlyConversations} <span className="text-lg text-gray-500 font-normal">pessoas</span></h4>
+                <p className="text-xs text-gray-500 mt-4">
+                  Volume total no mês (considerando {daysWorked} dias úteis).
+                </p>
+              </div>
+            </div>
+
+            {/* Action Plan Screen */}
+            {selectedChannels.length > 0 && (
+              <div className="mt-6 bg-card border border-highlight/20 rounded-2xl p-6">
+                <h4 className="text-lg font-semibold text-highlight mb-4 flex items-center gap-2">
+                  <Zap className="w-5 h-5" /> Plano de Ação Estratégico
+                </h4>
+                <div className="space-y-4">
+                  {CHANNELS.filter(c => selectedChannels.includes(c.id)).map(channel => (
+                    <div key={channel.id} className="bg-background/50 rounded-xl border border-shadow/50 overflow-hidden transition-all">
+                      <button 
+                        onClick={() => setExpandedChannel(expandedChannel === channel.id ? null : channel.id)}
+                        className="w-full p-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+                      >
+                        <div>
+                          <h5 className="font-medium text-white text-lg">{channel.label}</h5>
+                          <p className="text-xs text-gray-500 mt-1">{channel.stats}</p>
+                        </div>
+                        {expandedChannel === channel.id ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                      </button>
+                      
+                      {expandedChannel === channel.id && (
+                        <div className="p-4 pt-0 border-t border-shadow/50 mt-2 space-y-6">
+                          {/* Plano de Ação */}
+                          <div>
+                            <h6 className="text-highlight text-sm font-bold flex items-center gap-2 mb-3 uppercase tracking-wider">
+                              <Target className="w-4 h-4" /> Passo a Passo
+                            </h6>
+                            <ol className="space-y-3 pl-0 list-none">
+                              {channel.actionPlan.map((step, idx) => (
+                                <li key={idx} className="text-sm text-gray-300 flex gap-3">
+                                  <span className="text-highlight font-bold mt-0.5">{idx + 1}.</span>
+                                  <span className="leading-relaxed">{step}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+
+                          {/* Scripts */}
+                          <div>
+                            <h6 className="text-highlight text-sm font-bold flex items-center gap-2 mb-3 uppercase tracking-wider">
+                              <MessageSquare className="w-4 h-4" /> Scripts Prontos
+                            </h6>
+                            <div className="space-y-3">
+                              {channel.scripts.map((script, idx) => (
+                                <div key={idx} className="bg-black/30 rounded-lg p-3 border border-white/5">
+                                  <p className="text-xs text-gray-400 mb-1 font-medium">{script.title}</p>
+                                  <p className="text-sm text-gray-200 italic">"{script.text}"</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {/* Cadência */}
+                            <div>
+                              <h6 className="text-highlight text-sm font-bold flex items-center gap-2 mb-3 uppercase tracking-wider">
+                                <Clock className="w-4 h-4" /> Cadência
+                              </h6>
+                              <ul className="space-y-3">
+                                {channel.cadence.map((item, idx) => (
+                                  <li key={idx} className="text-sm text-gray-300 flex items-start gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-1.5 flex-shrink-0" />
+                                    <span className="leading-relaxed">{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            
+                            {/* Métricas e Erros */}
+                            <div className="space-y-6">
+                              <div>
+                                <h6 className="text-highlight text-sm font-bold flex items-center gap-2 mb-2 uppercase tracking-wider">
+                                  <BarChart className="w-4 h-4" /> Métricas Esperadas
+                                </h6>
+                                <p className="text-sm text-gray-300 leading-relaxed">{channel.metrics}</p>
+                              </div>
+                              <div>
+                                <h6 className="text-[#f87171] text-sm font-bold flex items-center gap-2 mb-2 uppercase tracking-wider">
+                                  <AlertTriangle className="w-4 h-4" /> Evite
+                                </h6>
+                                <p className="text-sm text-gray-300 leading-relaxed">{channel.errors}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             </div>
 
             {/* INVISIBLE A4 PDF TEMPLATE */}
@@ -373,7 +684,7 @@ export default function ROICalculator() {
               <div 
                 ref={reportRef} 
                 className="bg-[#121212] flex flex-col justify-between"
-                style={{ width: '794px', height: '1123px', padding: '60px' }}
+                style={{ width: '794px', minHeight: '1123px', height: 'auto', padding: '60px' }}
               >
                 {/* Header */}
                 <div>
@@ -452,6 +763,103 @@ export default function ROICalculator() {
                         : `Atenção: Com estes valores, a parcela é maior que o faturamento.`}
                     </p>
                   </div>
+
+                  {/* Funil de Conversão */}
+                  <div className="mt-8 bg-[#1E1E1E] border border-[#2A2A2A] rounded-2xl p-8">
+                    <h4 className="text-[#D4AF37] text-lg font-bold mb-6 uppercase tracking-wider border-b border-[#2A2A2A] pb-2">Funil de Vendas e Conversão</h4>
+                    <div className="grid grid-cols-3 gap-6">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Taxa de Conversão</p>
+                        <p className="text-3xl font-bold text-white">{conversionRate}%</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Conversas Diárias</p>
+                        <p className="text-3xl font-bold text-white">{conversationsNeeded} <span className="text-sm text-gray-500 font-normal">/dia</span></p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Conversas Mensais</p>
+                        <p className="text-3xl font-bold text-white">{monthlyConversations} <span className="text-sm text-gray-500 font-normal">/mês</span></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Plano de Ação PDF */}
+                  {selectedChannels.length > 0 && (
+                    <div className="mt-8 bg-[#1A1A1A] rounded-2xl p-8 border border-[#2A2A2A]">
+                      <h4 className="text-[#D4AF37] text-lg font-bold mb-6 uppercase tracking-wider border-b border-[#2A2A2A] pb-2">Plano de Ação Estratégico Detalhado</h4>
+                      <div className="space-y-12">
+                        {CHANNELS.filter(c => selectedChannels.includes(c.id)).map(channel => (
+                          <div key={channel.id} className="border-l-2 border-[#D4AF37] pl-6 pb-6 border-b border-[#2A2A2A] last:border-b-0 last:pb-0">
+                            <h5 className="font-bold text-white text-2xl mb-1">{channel.label}</h5>
+                            <p className="text-gray-400 text-sm mb-6 uppercase tracking-wider">{channel.stats}</p>
+                            
+                            <div className="grid grid-cols-12 gap-8">
+                              {/* Esquerda: Passo a passo */}
+                              <div className="col-span-7">
+                                <h6 className="text-[#D4AF37] font-semibold flex items-center gap-2 mb-4 uppercase tracking-wider text-sm">
+                                  <Target className="w-4 h-4" /> PASSO A PASSO
+                                </h6>
+                                <ol className="space-y-4 pl-0 list-none">
+                                  {channel.actionPlan.map((step, idx) => (
+                                    <li key={idx} className="text-sm text-gray-300 flex gap-3 leading-relaxed">
+                                      <span className="text-[#D4AF37] font-bold">{idx + 1}.</span>
+                                      <span>{step}</span>
+                                    </li>
+                                  ))}
+                                </ol>
+                              </div>
+
+                              {/* Direita: Scripts, Cadencia, Metricas */}
+                              <div className="col-span-5 space-y-6">
+                                {/* Scripts */}
+                                <div className="bg-[#121212] rounded-xl p-5 border border-[#2A2A2A]">
+                                  <h6 className="text-[#D4AF37] text-xs font-bold flex items-center gap-2 mb-3 uppercase">
+                                    <MessageSquare className="w-3 h-3" /> Scripts Prontos
+                                  </h6>
+                                  <div className="space-y-4">
+                                    {channel.scripts.map((script, idx) => (
+                                      <div key={idx}>
+                                        <p className="text-xs text-gray-500 mb-1 font-medium">{script.title}</p>
+                                        <p className="text-xs text-gray-300 italic leading-relaxed">"{script.text}"</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Cadência */}
+                                <div className="bg-[#121212] rounded-xl p-5 border border-[#2A2A2A]">
+                                  <h6 className="text-[#D4AF37] text-xs font-bold flex items-center gap-2 mb-3 uppercase">
+                                    <Clock className="w-3 h-3" /> Cadência
+                                  </h6>
+                                  <ul className="space-y-3">
+                                    {channel.cadence.map((item, idx) => (
+                                      <li key={idx} className="text-xs text-gray-300 flex items-start gap-2 leading-relaxed">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-1.5 flex-shrink-0" />
+                                        <span>{item}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+
+                                {/* Métricas e Evite */}
+                                <div className="bg-[#121212] rounded-xl p-5 border border-[#2A2A2A]">
+                                  <h6 className="text-[#D4AF37] text-xs font-bold mb-2 uppercase flex items-center gap-2">
+                                    <BarChart className="w-3 h-3" /> Métricas Esperadas
+                                  </h6>
+                                  <p className="text-xs text-gray-300 mb-5 leading-relaxed">{channel.metrics}</p>
+                                  
+                                  <h6 className="text-[#f87171] text-xs font-bold mb-2 uppercase flex items-center gap-2">
+                                    <AlertTriangle className="w-3 h-3" /> Evite
+                                  </h6>
+                                  <p className="text-xs text-gray-300 leading-relaxed">{channel.errors}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Footer */}
