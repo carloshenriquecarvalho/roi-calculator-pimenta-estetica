@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import ROICalculator from "@/components/sections/calculators/ROICalculator";
+import ROICalculator from "./components/ROICalculator";
 
 export const metadata: Metadata = {
   title: "Calculadora de ROI | ML Equipamentos",
