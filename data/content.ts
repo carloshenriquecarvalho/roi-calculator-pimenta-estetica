@@ -142,11 +142,7 @@ export const hubContent: HubContent = {
             imgUrl: "/ultrassom.jpeg"
         }
     ],
-    results: {
-        title: "Equipamentos em Destaque",
-        subtitle: "As tecnologias mais cobiçadas do mercado, agora ao alcance da sua clínica.",
-        imgUrls: ["", "", ""]
-    },
+    
     testimonials: {
         title: "Parceiros de Sucesso",
         cardContent: [

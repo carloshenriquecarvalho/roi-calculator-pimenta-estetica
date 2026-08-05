@@ -2,12 +2,11 @@ import { campaigns } from "@/data/content";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
-import Header from "@/components/layout/Header";
+import LandingHeader from "@/components/layout/LandingHeader";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/landing/Hero";
 import Pain from "@/components/sections/landing/Pain";
 import Solution from "@/components/sections/landing/Solution";
-import Benefits from "@/components/sections/landing/Benefits";
 import Testimonials from "@/components/sections/landing/Testimonials";
 import Faq from "@/components/sections/landing/Faq";
 import LeadForm from "@/components/sections/landing/LeadForm";
@@ -42,12 +41,10 @@ export default async function LandingPage({params}: { params: Promise<{ campaign
 
     return (
         <div className="flex flex-col min-h-screen">
-            <Header />
+            <LandingHeader />
             <main className="flex-grow pt-20">
                 <Hero {...data.hero} />
-                <Pain {...data.pain} />
                 <Solution cardContent={data.solution.cardContent} />
-                <Benefits {...data.benefits} />
                 <Testimonials {...data.testimonials} />
                 <Faq {...data.faq} />
                 <LeadForm {...data.leadForm} campaign={slug} />

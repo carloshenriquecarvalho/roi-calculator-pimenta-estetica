@@ -1,27 +1,40 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Button from '@/components/ui/Button';
+import * as React from "react"
+import { Bell, Search } from "lucide-react"
+import { Input } from "../ui/input"
+import { Button } from "../ui/Button"
 
-export default function Header() {
+export function Header() {
   return (
-    <header className="fixed top-0 left-0 right-0 w-full bg-background/80 backdrop-blur-md z-50 border-b border-shadow">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-serif font-semibold text-xl text-title hover:text-highlight transition-colors">
-          ML Equipamentos
-          {/* <Image src="/logo-pimenta.jpg" alt="Logo" width={40} height={40} /> */}
-        </Link>
-        <nav className="hidden md:flex gap-8 text-sm font-medium">
-          <Link href="/#servicos" className="hover:text-highlight transition-colors">Serviços</Link>
-          <Link href="/#resultados" className="hover:text-highlight transition-colors">Resultados</Link>
-          <Link href="/#depoimentos" className="hover:text-highlight transition-colors">Depoimentos</Link>
-          <Link href="/calculadora-roi" className="hover:text-highlight transition-colors">Calculadora ROI</Link>
-          <Link href="/#faq" className="hover:text-highlight transition-colors">FAQ</Link>
-        </nav>
-        <div className="hidden sm:block">
-          <Button text="Fale com um Especialista" url="#contato" />
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-end md:justify-between border-b border-[#2A2A2A] bg-[#121212]/80 px-6 backdrop-blur-md">
+      <div className="hidden md:flex w-full max-w-md items-center relative">
+        <Search className="absolute left-3 h-4 w-4 text-gray-400" />
+        <Input 
+          type="search" 
+          placeholder="Buscar cursos..." 
+          className="pl-9 bg-[#1E1E1E]/50 border-none focus-visible:ring-1"
+        />
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" className="relative text-gray-400 hover:text-white">
+          <Bell className="h-5 w-5" />
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#D4AF37]"></span>
+        </Button>
+        <div className="flex items-center gap-3">
+          <div className="hidden md:flex flex-col items-end text-sm">
+            <span className="font-medium text-white">Carlos Henrique</span>
+            <span className="text-xs text-gray-400">Aluno PRO</span>
+          </div>
+          <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-[#D4AF37]/20">
+            <img 
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150" 
+              alt="User avatar" 
+              className="h-full w-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </header>
-  );
+  )
 }
+export default Header;

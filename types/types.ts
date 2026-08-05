@@ -113,7 +113,6 @@ export interface HubContent {
     hero: HubHeroProps;
     about: HubAboutProps;
     services: HubServiceItem[];
-    results: BenefitsProps;
     testimonials: TestimonialsProps;
     faq: FaqProps;
 }

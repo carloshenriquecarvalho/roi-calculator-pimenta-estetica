@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Header from "@/components/layout/Header";
+import LandingHeader from "@/components/layout/LandingHeader";
 import Footer from "@/components/layout/Footer";
 import ROICalculator from "./components/ROICalculator";
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CalculadoraRoiPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <LandingHeader />
       <main className="flex-grow pt-20">
         <ROICalculator />
       </main>

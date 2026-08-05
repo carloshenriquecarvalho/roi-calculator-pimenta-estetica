@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Header from "@/components/layout/Header";
+import LandingHeader from "@/components/layout/LandingHeader";
 import Footer from "@/components/layout/Footer";
 import Link from "next/link";
 import { ArrowLeft, Shield, Cookie, UserCheck, HelpCircle } from "lucide-react";
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function PrivacyPolicy() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-title/80 font-sans">
-      <Header />
+      <LandingHeader />
       
       <main className="flex-grow pt-28 pb-20 relative overflow-hidden">
         {/* Glow effect backgrounds */}
